@@ -1,0 +1,13 @@
+{
+  "name": "robinhood-fees-push",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone Telegram pusher for Robinhood-Chain tokenized-stock fee leaderboards",
+  "main": "push.js",
+  "scripts": {
+    "push": "node push.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
