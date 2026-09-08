@@ -47,3 +47,32 @@ Telegram 机器人和收件人通过 GitHub Actions Secret `BOT_TOKENS` 配置�
 BOT_TOKENS='token@chatId:标题' node push.js
 ```
 会立即扫链并推送一次（用于验证）。
+name: push-telegram
+
+# Every 30 minutes, plus manual trigger. NOTE: GitHub cron is best-effort and can
+# be delayed several minutes under load 鈥� fine for a ~30-min board.
+on:
+  schedule:
+    - cron: "3,33 * * * *"
+  workflow_dispatch: {}
+
+# Avoid overlapping runs if one is slow.
+concurrency:
+  group: push-telegram
+  cancel-in-progress: false
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Push boards to Telegram
+        env:
+          # Optional override. Leave unset to use the built-in targets in push.js.
+          # Format: "token@chatId:Title,token2@chatId2:Title2"
+          BOT_TOKENS: ${{ secrets.BOT_TOKENS }}
+        run: node push.js
